@@ -1,5 +1,5 @@
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DB_URL")
 }
 
@@ -10,7 +10,7 @@ generator client {
 model Category {
   createdAt   DateTime @default(now())
   description String?
-  id          String   @id @default(cuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String?
   posts       Post[]
   updatedAt   DateTime @updatedAt
@@ -19,7 +19,7 @@ model Category {
 model Author {
   createdAt DateTime @default(now())
   email     String?
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String?
   posts     Post[]
   updatedAt DateTime @updatedAt
@@ -27,13 +27,13 @@ model Author {
 
 model Post {
   author        Author?   @relation(fields: [authorId], references: [id])
-  authorId      String?
+  authorId      String?   @db.ObjectId
   category      Category? @relation(fields: [categoryId], references: [id])
-  categoryId    String?
+  categoryId    String?   @db.ObjectId
   comments      Comment[]
   content       String?
   createdAt     DateTime  @default(now())
-  id            String    @id @default(cuid())
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   publishedDate DateTime?
   title         String?
   updatedAt     DateTime  @updatedAt
@@ -42,9 +42,9 @@ model Post {
 model Comment {
   content   String?
   createdAt DateTime  @default(now())
-  id        String    @id @default(cuid())
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   post      Post?     @relation(fields: [postId], references: [id])
-  postId    String?
+  postId    String?   @db.ObjectId
   postedAt  DateTime?
   updatedAt DateTime  @updatedAt
 }
